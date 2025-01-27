@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class CalculationService {
+public class CalculationService implements ICalculationService{
     private final KafkaProducer kafkaProducer;
     private final KafkaConsumer kafkaConsumer;
 
