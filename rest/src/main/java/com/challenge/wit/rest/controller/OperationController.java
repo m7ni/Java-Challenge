@@ -1,38 +1,50 @@
 package com.challenge.wit.rest.controller;
 
-import com.challenge.wit.rest.service.CalculationService;
+import com.challenge.wit.rest.exception.InvalidOperationException;
 import com.challenge.wit.rest.service.ICalculationService;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import java.math.BigDecimal;
 
 @RestController
+@RequestMapping("/calculate")
 public class OperationController {
     private final ICalculationService calculationService;
 
-    public OperationController(CalculationService calculationService) {
+    @Autowired
+    public OperationController(ICalculationService calculationService) {
         this.calculationService = calculationService;
     }
 
-    @GetMapping("/sum")
-    public ResponseEntity<?> sum(@RequestParam double a, @RequestParam double b) {
-        return calculationService.calculate("sum", a, b);
+    @PostMapping ("/sum")
+    public ResponseEntity<BigDecimal> sum(@RequestParam @NotNull Double a, @RequestParam @NotNull Double b) {
+        BigDecimal result = calculationService.calculate("sum", a, b);
+        return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/subtract")
-    public ResponseEntity<?> subtract(@RequestParam double a, @RequestParam double b) {
-        return calculationService.calculate("subtract", a, b);
+    @PostMapping("/subtract")
+    public ResponseEntity<BigDecimal> subtract(@RequestParam @NotNull Double a, @RequestParam @NotNull Double b) {
+        BigDecimal result = calculationService.calculate("subtract", a, b);
+        return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/multiply")
-    public ResponseEntity<?> multiply(@RequestParam double a, @RequestParam double b) {
-        return calculationService.calculate("multiply", a, b);
+    @PostMapping("/multiply")
+    public ResponseEntity<BigDecimal> multiply(@RequestParam @NotNull Double a, @RequestParam @NotNull Double b) {
+        BigDecimal result = calculationService.calculate("multiply", a, b);
+        return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/divide")
-    public ResponseEntity<?> divide(@RequestParam double a, @RequestParam double b) {
-        return calculationService.calculate("divide", a, b);
+    @PostMapping("/divide")
+    public ResponseEntity<BigDecimal> divide(@RequestParam @NotNull Double a, @RequestParam @NotNull Double b) {
+        BigDecimal result = calculationService.calculate("divide", a, b);
+        return ResponseEntity.ok(result);
     }
 
+    // Handler for /calculate without operation
+    @PostMapping
+    public ResponseEntity<Void> handleMissingOperation() {
+        throw new InvalidOperationException("Operation not specified. Please provide a valid operation in the URL path.");
+    }
 }

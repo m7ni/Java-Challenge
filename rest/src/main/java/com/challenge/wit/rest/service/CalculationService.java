@@ -1,10 +1,15 @@
+// src/main/java/com/challenge/wit/rest/service/CalculationService.java
 package com.challenge.wit.rest.service;
 
 import com.challenge.wit.rest.kafka.KafkaConsumer;
 import com.challenge.wit.rest.kafka.KafkaProducer;
 import com.challenge.wit.shared.dto.CalculationRequest;
 import com.challenge.wit.shared.dto.CalculationResponse;
-import org.springframework.http.ResponseEntity;
+import com.challenge.wit.rest.exception.CalculationException;
+import com.challenge.wit.rest.exception.TimeoutException;
+import com.challenge.wit.rest.exception.InvalidOperationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -13,7 +18,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class CalculationService implements ICalculationService{
+public class CalculationService implements ICalculationService {
+
     private final KafkaProducer kafkaProducer;
     private final KafkaConsumer kafkaConsumer;
 
@@ -22,10 +28,15 @@ public class CalculationService implements ICalculationService{
         this.kafkaConsumer = kafkaConsumer;
     }
 
-    public ResponseEntity<?> calculate(String operation, double a, double b) {
+    public BigDecimal calculate(String operation, double a, double b) {
         String requestId = UUID.randomUUID().toString();
 
-        // Create the request
+        // Validate operation
+        if (!isValidOperation(operation)) {
+            throw new InvalidOperationException("Unsupported operation: " + operation);
+        }
+
+        // Create the calculation request
         CalculationRequest request = new CalculationRequest.Builder()
                 .requestId(requestId)
                 .operation(operation)
@@ -34,7 +45,11 @@ public class CalculationService implements ICalculationService{
                 .build();
 
         // Send the request to Kafka
-        kafkaProducer.sendRequest(request);
+        try {
+            kafkaProducer.sendRequest(request);
+        } catch (Exception e) {
+            throw new CalculationException("Failed to send calculation request to Kafka.", e);
+        }
 
         // Wait for the response
         try {
@@ -42,12 +57,21 @@ public class CalculationService implements ICalculationService{
             CalculationResponse response = future.get(5, TimeUnit.SECONDS);
 
             if (response.getError() != null) {
-                return ResponseEntity.badRequest().body(response.getError());
+                throw new CalculationException(response.getError());
             } else {
-                return ResponseEntity.ok(response.getResult());
+                return response.getResult();
             }
+        } catch (java.util.concurrent.TimeoutException e) {
+            throw new TimeoutException("Calculation request timed out after 5 seconds.", e);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Timeout or error while processing the request.");
+            throw new CalculationException("An unexpected error occurred during calculation.", e);
         }
+    }
+
+    private boolean isValidOperation(String operation) {
+        return operation.equalsIgnoreCase("sum") ||
+                operation.equalsIgnoreCase("subtract") ||
+                operation.equalsIgnoreCase("multiply") ||
+                operation.equalsIgnoreCase("divide");
     }
 }
