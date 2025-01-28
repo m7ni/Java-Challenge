@@ -1,6 +1,5 @@
 package com.challenge.wit.rest.service;
 
-import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 

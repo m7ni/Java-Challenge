@@ -10,7 +10,7 @@ public class ErrorResponse {
     private HttpStatus status;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime timestamp;
+    private final LocalDateTime timestamp;
 
     private String message;
     private List<String> errors;

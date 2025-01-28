@@ -8,8 +8,6 @@ import com.challenge.wit.shared.dto.CalculationResponse;
 import com.challenge.wit.rest.exception.CalculationException;
 import com.challenge.wit.rest.exception.TimeoutException;
 import com.challenge.wit.rest.exception.InvalidOperationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

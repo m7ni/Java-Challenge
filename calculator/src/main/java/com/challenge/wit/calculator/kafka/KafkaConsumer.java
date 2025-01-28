@@ -13,8 +13,6 @@ import java.util.concurrent.ConcurrentMap;
 @Component
 public class KafkaConsumer {
 
-    private final ConcurrentMap<String, CompletableFuture<CalculationRequest>> pendingRequests = new ConcurrentHashMap<>();
-
     private final CalculationService calculationService;
     private final KafkaProducer kafkaProducer;
 
