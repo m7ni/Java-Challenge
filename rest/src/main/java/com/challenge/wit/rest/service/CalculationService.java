@@ -51,19 +51,20 @@ public class CalculationService implements ICalculationService {
         }
 
         // Wait for the response
+        CalculationResponse response;
         try {
             CompletableFuture<CalculationResponse> future = kafkaConsumer.createPendingRequest(requestId);
-            CalculationResponse response = future.get(5, TimeUnit.SECONDS);
-
-            if (response.getError() != null) {
-                throw new CalculationException(response.getError());
-            } else {
-                return new CalculationResult(response.getResult());
-            }
+            response = future.get(5, TimeUnit.SECONDS);
         } catch (java.util.concurrent.TimeoutException e) {
             throw new TimeoutException("Calculation request timed out after 5 seconds.", e);
         } catch (Exception e) {
             throw new CalculationException("An unexpected error occurred during calculation.", e);
+        }
+
+        if (response.getError() != null) {
+            throw new CalculationException(response.getError());
+        } else {
+            return new CalculationResult(response.getResult());
         }
     }
 
