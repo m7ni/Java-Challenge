@@ -18,30 +18,14 @@ public class OperationController {
         this.calculationService = calculationService;
     }
 
-    @PostMapping ("/sum")
-    public ResponseEntity<BigDecimal> sum(@RequestParam @NotNull Double a, @RequestParam @NotNull Double b) {
-        BigDecimal result = calculationService.calculate("sum", a, b);
+    @PostMapping("/{operation}")
+    public ResponseEntity<BigDecimal> calculate(
+            @PathVariable String operation,
+            @RequestParam @NotNull Double a,
+            @RequestParam @NotNull Double b) {
+        BigDecimal result = calculationService.calculate(operation, a, b);
         return ResponseEntity.ok(result);
     }
-
-    @PostMapping("/subtract")
-    public ResponseEntity<BigDecimal> subtract(@RequestParam @NotNull Double a, @RequestParam @NotNull Double b) {
-        BigDecimal result = calculationService.calculate("subtract", a, b);
-        return ResponseEntity.ok(result);
-    }
-
-    @PostMapping("/multiply")
-    public ResponseEntity<BigDecimal> multiply(@RequestParam @NotNull Double a, @RequestParam @NotNull Double b) {
-        BigDecimal result = calculationService.calculate("multiply", a, b);
-        return ResponseEntity.ok(result);
-    }
-
-    @PostMapping("/divide")
-    public ResponseEntity<BigDecimal> divide(@RequestParam @NotNull Double a, @RequestParam @NotNull Double b) {
-        BigDecimal result = calculationService.calculate("divide", a, b);
-        return ResponseEntity.ok(result);
-    }
-
     // Handler for /calculate without operation
     @PostMapping
     public ResponseEntity<Void> handleMissingOperation() {
