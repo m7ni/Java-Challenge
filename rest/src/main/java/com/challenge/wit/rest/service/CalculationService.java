@@ -8,6 +8,7 @@ import com.challenge.wit.shared.dto.CalculationResponse;
 import com.challenge.wit.rest.exception.CalculationException;
 import com.challenge.wit.rest.exception.TimeoutException;
 import com.challenge.wit.rest.exception.InvalidOperationException;
+import com.challenge.wit.shared.dto.CalculationResult;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,7 +27,7 @@ public class CalculationService implements ICalculationService {
         this.kafkaConsumer = kafkaConsumer;
     }
 
-    public BigDecimal calculate(String operation, double a, double b) {
+    public CalculationResult calculate(String operation, double a, double b) {
         String requestId = UUID.randomUUID().toString();
 
         // Validate operation
@@ -57,7 +58,7 @@ public class CalculationService implements ICalculationService {
             if (response.getError() != null) {
                 throw new CalculationException(response.getError());
             } else {
-                return response.getResult();
+                return new CalculationResult(response.getResult());
             }
         } catch (java.util.concurrent.TimeoutException e) {
             throw new TimeoutException("Calculation request timed out after 5 seconds.", e);
