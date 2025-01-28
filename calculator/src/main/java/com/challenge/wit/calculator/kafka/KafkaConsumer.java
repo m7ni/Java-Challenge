@@ -13,8 +13,6 @@ import java.util.concurrent.ConcurrentMap;
 @Component
 public class KafkaConsumer {
 
-    private final ConcurrentMap<String, CompletableFuture<CalculationRequest>> pendingRequests = new ConcurrentHashMap<>();
-
     private final CalculationService calculationService;
     private final KafkaProducer kafkaProducer;
 
@@ -26,8 +24,14 @@ public class KafkaConsumer {
 
     @KafkaListener(topics = "${calculator.requests.topic}", groupId = "${spring.kafka.consumer.group-id}")
     public void consume(CalculationRequest request) {
-        CalculationResponse response = calculationService.calculate(request);
-        kafkaProducer.sendRequest(response);
+
+        try{
+            CalculationResponse response = calculationService.calculate(request);
+            kafkaProducer.sendRequest(response);
+        } catch (Exception ex){
+            //log fail
+        }
+
     }
 
 }
