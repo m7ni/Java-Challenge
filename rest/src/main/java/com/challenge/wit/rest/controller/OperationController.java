@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class restController {
+public class OperationController {
     private final ICalculationService calculationService;
 
-    public restController(CalculationService calculationService) {
+    public OperationController(CalculationService calculationService) {
         this.calculationService = calculationService;
     }
 
