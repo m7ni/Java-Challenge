@@ -59,7 +59,11 @@ public class KafkaConfig {
         configs.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
         configs.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
 
+        configs.put(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG,
+                MdcKafkaConsumerInterceptor.class.getName());
+
         return new DefaultKafkaConsumerFactory<>(configs);
     }
+
 }
 

@@ -5,6 +5,7 @@ import com.challenge.wit.shared.dto.CalculationRequest;
 import com.challenge.wit.shared.dto.CalculationResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +24,7 @@ public class KafkaConsumer {
 
     @KafkaListener(topics = "${calculator.requests.topic}", groupId = "${spring.kafka.consumer.group-id}")
     public void consume(CalculationRequest request) {
-        logger.info("Received Kafka request: Operation={}, a={}, b={}, requestId ={}", request.getOperation(), request.getOperandA(), request.getOperandB(), request.getRequestId());
+        logger.info("Received Kafka request: Operation={}, a={}, b={}, requestId ={}", request.getOperation(), request.getOperandA(), request.getOperandB(), MDC.get(MdcKafkaConsumerInterceptor.MDC_REQUEST_ID_KEY));
         try{
             CalculationResponse response = calculationService.calculate(request);
             kafkaProducer.sendRequest(response);

@@ -1,9 +1,11 @@
 package com.challenge.wit.calculator.service;
 
+import com.challenge.wit.calculator.kafka.MdcKafkaConsumerInterceptor;
 import com.challenge.wit.shared.dto.CalculationRequest;
 import com.challenge.wit.shared.dto.CalculationResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -55,7 +57,7 @@ public class CalculationService {
         }
 
         logger.info("Calculation response: RequestId={}, Result={}, Error={}",
-                request.getRequestId(), result, error);
+                MDC.get(MdcKafkaConsumerInterceptor.MDC_REQUEST_ID_KEY), result, error);
         return new CalculationResponse(request.getRequestId(), result, error);
     }
 }
