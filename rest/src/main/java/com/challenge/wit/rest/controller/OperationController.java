@@ -1,11 +1,13 @@
 package com.challenge.wit.rest.controller;
 
 import com.challenge.wit.rest.exception.InvalidOperationException;
+import com.challenge.wit.rest.filter.RequestIdFilter;
 import com.challenge.wit.rest.service.ICalculationService;
 import com.challenge.wit.shared.dto.CalculationResult;
 import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,9 +33,9 @@ public class OperationController {
             @PathVariable String operation,
             @RequestParam Double a,
             @RequestParam Double b) {
-        logger.info("Received HTTP request: Operation={}, a={}, b={}", operation, a, b);
+        logger.info("Received HTTP request: Operation={}, a={}, b={}, requestId ={}", operation, a, b, MDC.get(RequestIdFilter.MDC_REQUEST_ID_KEY));
         CalculationResult result = calculationService.calculate(operation, a, b);
-        logger.info("Sending HTTP response: {}", result);
+        logger.info("Sending HTTP response: {} , requestId ={}", result,MDC.get(RequestIdFilter.MDC_REQUEST_ID_KEY));
         return ResponseEntity.ok(result);
     }
 

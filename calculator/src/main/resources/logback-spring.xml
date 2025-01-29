@@ -25,14 +25,12 @@
         </encoder>
     </appender>
 
-    <!-- Root Logger: DEBUG Level and Above -->
+    <!-- Root Logger -->
     <root level="INFO">
         <appender-ref ref="Console" />
         <appender-ref ref="FileAppender" />
     </root>
 
-    <!-- Logger for Specific Packages (Optional) -->
-    <!-- Example: Reduce verbosity for Spring Framework -->
+    <!-- Reduce verbosity for Spring Framework -->
     <logger name="org.springframework" level="INFO" />
-
 </configuration>

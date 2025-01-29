@@ -3,6 +3,7 @@ package com.challenge.wit.rest.service;
 import com.challenge.wit.rest.exception.CalculationException;
 import com.challenge.wit.rest.exception.InvalidOperationException;
 import com.challenge.wit.rest.exception.TimeoutException;
+import com.challenge.wit.rest.filter.RequestIdFilter;
 import com.challenge.wit.rest.kafka.KafkaConsumer;
 import com.challenge.wit.rest.kafka.KafkaProducer;
 import com.challenge.wit.shared.dto.CalculationRequest;
@@ -10,6 +11,7 @@ import com.challenge.wit.shared.dto.CalculationResponse;
 import com.challenge.wit.shared.dto.CalculationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -32,7 +34,7 @@ public class CalculationService implements ICalculationService {
 
     @Override
     public CalculationResult calculate(String operation, double a, double b) {
-        String requestId = UUID.randomUUID().toString();
+        String requestId = MDC.get(RequestIdFilter.MDC_REQUEST_ID_KEY);
         logger.info("Processing calculation request: RequestId={}, Operation={}, OperandA={}, OperandB={}",
                 requestId, operation, a, b);
 
