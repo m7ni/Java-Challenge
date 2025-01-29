@@ -35,7 +35,7 @@ public class GlobalExceptionHandler{
         return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
     }
 
-    // Handle InvalidOperationException (Optional)
+    // Handle InvalidOperationException
     @ExceptionHandler(InvalidOperationException.class)
     public ResponseEntity<ErrorResponse> handleInvalidOperationException(InvalidOperationException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
