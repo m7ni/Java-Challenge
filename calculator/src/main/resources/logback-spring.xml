@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <!-- Define Pattern for Log Messages -->
     <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n"/>
 
-    <!-- Console Appender for Immediate Feedback -->
+    <!-- Console Appender -->
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${LOG_PATTERN}</pattern>
         </encoder>
     </appender>
 
-    <!-- File Appender for Persistent Logs -->
-    <appender name="FileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/application.log</file>
+    <!-- File Appender for Calculator Module -->
+    <appender name="CalculatorFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/calculator.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- Roll log files daily -->
-            <fileNamePattern>logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <!-- Keep 30 days' worth of history -->
+            <fileNamePattern>logs/calculator.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -25,11 +22,17 @@
         </encoder>
     </appender>
 
-    <!-- Root Logger: DEBUG Level and Above -->
-    <root level="DEBUG">
+    <!-- Root Logger -->
+    <root level="INFO">
         <appender-ref ref="Console" />
-        <appender-ref ref="FileAppender" />
     </root>
 
 
+    <!-- Logger for Calculator Module -->
+    <logger name="com.challenge.wit.calculator" level="DEBUG" additivity="false">
+        <appender-ref ref="CalculatorFileAppender" />
+    </logger>
+
+    <!-- Reduce verbosity for Spring Framework -->
+    <logger name="org.springframework" level="INFO" />
 </configuration>

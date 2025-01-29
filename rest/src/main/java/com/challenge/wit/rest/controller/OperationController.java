@@ -4,13 +4,19 @@ import com.challenge.wit.rest.exception.InvalidOperationException;
 import com.challenge.wit.rest.service.ICalculationService;
 import com.challenge.wit.shared.dto.CalculationResult;
 import jakarta.validation.constraints.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+// Note: Use jakarta.validation.constraints if you're using Jakarta EE, otherwise select javax.validation.constraints
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/calculate")
 public class OperationController {
+
+    private static final Logger logger = LoggerFactory.getLogger(OperationController.class);
+
     private final ICalculationService calculationService;
 
     @Autowired
@@ -23,11 +29,16 @@ public class OperationController {
             @PathVariable String operation,
             @RequestParam @NotNull Double a,
             @RequestParam @NotNull Double b) {
+        logger.info("Received HTTP request: Operation={}, a={}, b={}", operation, a, b);
         CalculationResult result = calculationService.calculate(operation, a, b);
+        logger.info("Sending HTTP response: {}", result);
         return ResponseEntity.ok(result);
     }
+
+    // Handler for /calculate without operation
     @PostMapping
     public ResponseEntity<Void> handleMissingOperation() {
+        logger.warn("Received calculation request without specifying an operation.");
         throw new InvalidOperationException("Operation not specified. Please provide a valid operation in the URL path.");
     }
 }
