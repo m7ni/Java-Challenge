@@ -3,7 +3,6 @@ package com.challenge.wit.rest.service;
 import com.challenge.wit.rest.exception.CalculationException;
 import com.challenge.wit.rest.exception.InvalidOperationException;
 import com.challenge.wit.rest.exception.TimeoutException;
-import com.challenge.wit.rest.filter.RequestIdFilter;
 import com.challenge.wit.rest.kafka.KafkaConsumer;
 import com.challenge.wit.rest.kafka.KafkaProducer;
 import com.challenge.wit.shared.dto.CalculationRequest;
@@ -16,7 +15,6 @@ import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -37,24 +35,18 @@ public class CalculationService implements ICalculationService {
     public CalculationResult calculate(String operation, double a, double b) {
         String requestId = MDC.get(LoggingConstants.MDC_REQUEST_ID_KEY);
 
-        // Log the calculation request using LOG_CALCULATION_REQUEST
         logger.info(LoggingConstants.LOG_CALCULATION_REQUEST, operation, a, b);
 
-        // Validate operation
         if (!isValidOperation(operation)) {
-            // Log using LOG_UNSUPPORTED_OPERATION
             logger.error(LoggingConstants.LOG_UNSUPPORTED_OPERATION, operation);
             throw new InvalidOperationException("Unsupported operation: " + operation);
         }
 
-        // Validate operands
         if (!Double.isFinite(a) || !Double.isFinite(b)) {
-            // Use LOG_ERROR with Type and Message
             logger.error(LoggingConstants.LOG_ERROR, "InvalidOperands", "Operands must be finite numbers. Received a=" + a + ", b=" + b);
             throw new CalculationException("Invalid operands: Operands must be finite numbers.");
         }
 
-        // Create the calculation request
         CalculationRequest request = new CalculationRequest.Builder()
                 .requestId(requestId)
                 .operation(operation)
@@ -62,15 +54,12 @@ public class CalculationService implements ICalculationService {
                 .operandB(BigDecimal.valueOf(b))
                 .build();
 
-        // Send the request to Kafka
         try {
             kafkaProducer.sendRequest(request);
-            // Log Kafka message sent using LOG_KAFKA_SEND
             logger.debug(LoggingConstants.LOG_KAFKA_SEND, "calculator.requests.topic");
             logger.debug("CalculationRequest details: {}", request); // Optional: Additional debug info
         } catch (Exception e) {
-            // Log using LOG_ERROR with Type and Message
-            logger.error(LoggingConstants.LOG_ERROR, "KafkaSendFailure", e.getMessage(), e);
+            logger.error(LoggingConstants.LOG_ERROR, "KafkaSendFailure", e.getMessage());
             throw new CalculationException("Failed to send calculation request to Kafka.", e);
         }
 
@@ -78,26 +67,20 @@ public class CalculationService implements ICalculationService {
         try {
             CompletableFuture<CalculationResponse> future = kafkaConsumer.createPendingRequest(requestId);
             response = future.get(5, TimeUnit.SECONDS);
-            // Log Kafka message received using LOG_KAFKA_RECEIVE
             logger.debug(LoggingConstants.LOG_KAFKA_RECEIVE, "calculator.responses.topic");
-            // Log calculation response using LOG_CALCULATION_RESPONSE
             logger.debug(LoggingConstants.LOG_CALCULATION_RESPONSE, response.getResult(), response.getError());
         } catch (java.util.concurrent.TimeoutException e) {
-            // Log using LOG_ERROR with Type and Message
-            logger.error(LoggingConstants.LOG_ERROR, "Timeout", "Calculation request timed out after 5 seconds.", e);
-            throw new TimeoutException("Calculation request timed out after 5 seconds.", e);
+            logger.error(LoggingConstants.LOG_ERROR, "Timeout", "Calculation request timed out after 5 seconds.");
+            throw new TimeoutException("Calculation request timed out after 5 seconds.");
         } catch (Exception e) {
-            // Log using LOG_ERROR with Type and Message
-            logger.error(LoggingConstants.LOG_ERROR, "UnexpectedError", e.getMessage(), e);
-            throw new CalculationException("An unexpected error occurred during calculation.", e);
+            logger.error(LoggingConstants.LOG_ERROR, "UnexpectedError", e.getMessage());
+            throw new CalculationException("An unexpected error occurred during calculation.");
         }
 
         if (response.getError() != null) {
-            // Log calculation error using LOG_ERROR with Type and Message
             logger.error(LoggingConstants.LOG_ERROR, "CalculationError", response.getError());
             throw new CalculationException(response.getError());
         } else {
-            // Log successful calculation using LOG_CALCULATION_RESULT
             logger.info(LoggingConstants.LOG_CALCULATION_RESULT, "Calculation successful", response.getResult());
             return new CalculationResult(response.getResult());
         }
@@ -108,7 +91,6 @@ public class CalculationService implements ICalculationService {
                 operation.equalsIgnoreCase("subtract") ||
                 operation.equalsIgnoreCase("multiply") ||
                 operation.equalsIgnoreCase("divide");
-        // Optional: Use LOG_CALCULATION_RESULT for debugging operation validity
         logger.debug(LoggingConstants.LOG_CALCULATION_RESULT, "Operation validity", valid);
         return valid;
     }

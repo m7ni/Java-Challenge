@@ -28,7 +28,6 @@ public class ErrorResponse {
         this.errorCode = errorCode;
     }
 
-    // Getters and Setters
 
     public HttpStatus getStatus() {
         return status;
@@ -41,8 +40,6 @@ public class ErrorResponse {
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
-
-    // No setter for timestamp to maintain immutability
 
     public String getMessage() {
         return message;

@@ -51,11 +51,9 @@ public class KafkaConfig {
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configs.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
 
-        // Use ErrorHandlingDeserializer for key and value deserialization
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
 
-        // Configure ErrorHandlingDeserializer with JsonDeserializer
         configs.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class.getName());
         configs.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
         configs.put(JsonDeserializer.TRUSTED_PACKAGES, "*");

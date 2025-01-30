@@ -48,7 +48,7 @@ public class CalculationService {
                 }
             }
         } catch (Exception ex) {
-            logger.error(LoggingConstants.LOG_ERROR, ex.getClass().getSimpleName(), ex.getMessage(), ex);
+            logger.error(LoggingConstants.LOG_ERROR, ex.getClass().getSimpleName(), ex.getMessage());
             result = null;
             error = ex.getMessage();
         }

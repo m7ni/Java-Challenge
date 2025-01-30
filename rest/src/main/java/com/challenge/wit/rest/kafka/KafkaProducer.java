@@ -1,6 +1,5 @@
 package com.challenge.wit.rest.kafka;
 
-import com.challenge.wit.rest.controller.OperationController;
 import com.challenge.wit.shared.dto.CalculationRequest;
 import com.challenge.wit.shared.logging.LoggingConstants;
 import org.slf4j.Logger;
@@ -14,7 +13,7 @@ public class KafkaProducer {
     private static final Logger logger = LoggerFactory.getLogger(KafkaProducer.class);
     private final KafkaTemplate<String, CalculationRequest> kafkaTemplate;
 
-    private String requestsTopic;
+    private final String requestsTopic;
 
     public KafkaProducer(KafkaTemplate<String, CalculationRequest> kafkaTemplate,
                          @Value("${calculator.requests.topic}") String requestsTopic) {

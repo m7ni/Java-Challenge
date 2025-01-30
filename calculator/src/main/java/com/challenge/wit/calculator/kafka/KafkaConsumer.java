@@ -6,7 +6,6 @@ import com.challenge.wit.shared.dto.CalculationResponse;
 import com.challenge.wit.shared.logging.LoggingConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +29,7 @@ public class KafkaConsumer {
         logger.info(LoggingConstants.LOG_KAFKA_RECEIVE, "calculator-requests");
         logger.info(LoggingConstants.LOG_CALCULATION_REQUEST, request.getOperation(), request.getOperandA(), request.getOperandB());
 
-        CalculationResponse response = null;
+        CalculationResponse response;
         try {
             response = calculationService.calculate(request);
 
@@ -38,7 +37,7 @@ public class KafkaConsumer {
                 logger.error(LoggingConstants.LOG_ERROR, "CalculationModuleError", response.getError());
             }
         } catch (Exception ex) {
-            logger.error(LoggingConstants.LOG_ERROR, "UnexpectedError", ex.getMessage(), ex);
+            logger.error(LoggingConstants.LOG_ERROR, "UnexpectedError", ex.getMessage());
             response = new CalculationResponse(request.getRequestId(), null, ex.getMessage());
         }
 
@@ -46,7 +45,7 @@ public class KafkaConsumer {
             kafkaProducer.sendRequest(response);
         } catch (Exception ex) {
             logger.error(LoggingConstants.LOG_ERROR, "KafkaSendFailure",
-                    "Failed to send calculation response to Kafka: " + ex.getMessage(), ex);
+                    "Failed to send calculation response to Kafka: " + ex.getMessage());
         }
     }
 }

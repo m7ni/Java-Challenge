@@ -1,6 +1,5 @@
 package com.challenge.wit.rest.kafka;
 
-import com.challenge.wit.rest.controller.OperationController;
 import com.challenge.wit.shared.dto.CalculationResponse;
 import com.challenge.wit.shared.logging.LoggingConstants;
 import org.slf4j.Logger;

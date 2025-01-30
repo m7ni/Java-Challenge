@@ -17,8 +17,6 @@ import java.math.BigDecimal;
 import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 class CalculationServiceTest {
@@ -40,7 +38,7 @@ class CalculationServiceTest {
     }
 
     @Test
-    void testSuccessfulCalculation() throws Exception {
+    void testSuccessfulCalculation() {
         String operation = "sum";
         double a = 10.0;
         double b = 5.0;
@@ -62,7 +60,7 @@ class CalculationServiceTest {
     }
 
     @Test
-    void testDivisionByZero() throws Exception {
+    void testDivisionByZero() {
         String operation = "divide";
         double a = 1.0;
         double b = 0.0;
@@ -98,7 +96,7 @@ class CalculationServiceTest {
     }
 
     @Test
-    void testKafkaTimeout() throws Exception {
+    void testKafkaTimeout() {
         String operation = "sum";
         double a = 10.0;
         double b = 5.0;

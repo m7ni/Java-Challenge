@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -39,7 +38,7 @@ class RestIntegrationTest {
     }
 
     @Test
-    void testCalculateSumIntegration() throws Exception {
+    void testCalculateSumIntegration() {
         CalculationResponse response = new CalculationResponse("req1", BigDecimal.valueOf(25), null);
         CompletableFuture<CalculationResponse> future = CompletableFuture.completedFuture(response);
 
@@ -53,7 +52,7 @@ class RestIntegrationTest {
     }
 
     @Test
-    void testCalculateDivisionByZeroIntegration() throws Exception {
+    void testCalculateDivisionByZeroIntegration() {
         CalculationResponse response = new CalculationResponse("req2", null, "Division by zero");
         CompletableFuture<CalculationResponse> future = CompletableFuture.completedFuture(response);
 
