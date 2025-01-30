@@ -21,9 +21,17 @@ public class KafkaProducer {
         this.requestsTopic = requestsTopic;
     }
 
+    /**
+     * Sends a CalculationRequest to the specified Kafka topic.
+     *
+     * @param request The CalculationRequest to send.
+     */
     public void sendRequest(CalculationRequest request) {
-        logger.info(LoggingConstants.LOG_CALCULATION_REQUEST, request.getOperation(),request.getOperandA(),request.getOperandB());
-        logger.info(LoggingConstants.LOG_KAFKA_SEND,"calculation-requests");
+        // Log the calculation request details
+        logger.info(LoggingConstants.LOG_CALCULATION_REQUEST, request.getOperation(), request.getOperandA(), request.getOperandB());
+        logger.info(LoggingConstants.LOG_KAFKA_SEND, "calculation-requests");
+        
+        // Send the CalculationRequest to Kafka
         kafkaTemplate.send(requestsTopic, request);
     }
 }

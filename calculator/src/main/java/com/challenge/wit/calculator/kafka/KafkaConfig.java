@@ -21,6 +21,12 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
+    /**
+     * Configures the KafkaTemplate for sending CalculationResponse messages.
+     *
+     * @param producerFactory The ProducerFactory for CalculationResponse.
+     * @return A configured KafkaTemplate.
+     */
     @Bean
     public KafkaTemplate<String, CalculationResponse> kafkaTemplate(ProducerFactory<String, CalculationResponse> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
