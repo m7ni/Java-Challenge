@@ -2,18 +2,26 @@
 
 This repository demonstrates a microservices setup using Apache Kafka as the communication layer, where:
 
-shared-dto: A library module containing shared data transfer objects (DTOs) and logging constants.
+**shared-dto**: A library module containing shared data transfer objects (DTOs) and logging constants.
 
-rest: A Spring Boot application exposing HTTP endpoints on port 8080. It sends requests via Kafka to the calculator module and awaits responses.
+**rest**: A Spring Boot application exposing HTTP endpoints on port 8080. It sends requests via Kafka to the calculator module and awaits responses.
 
-calculator: Another Spring Boot application listening on Kafka, performing calculations, and sending the results back via Kafka.
+**calculator**: Another Spring Boot application listening on Kafka, performing calculations, and sending the results back via Kafka.
 
 Zookeeper and Kafka (Confluent images) are included via Docker Compose, allowing you to run everything with a single command.
 
 ### HOW TO RUN
 
+#### Prerequisites
+**Git**: Version control system to clone the repository.
+
+**Docker**: Platform to build and run containers.
+
+**Docker** Compose: Tool to define and manage multi-container Docker applications.
+
 #### Clone this repository:
 git clone https://github.com/m7ni/Java-Challenge.git
+cd Java-Challenge
 
 Launch everything (Zookeeper, Kafka, rest, calculator) with:
 **docker-compose up --build -d**
