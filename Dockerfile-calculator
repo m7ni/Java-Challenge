@@ -1,0 +1,29 @@
+# Stage 1: Build 'calculator' plus its dependencies (shared-dto) using -pl calculator -am
+FROM maven:3.8.6-eclipse-temurin-17 AS builder
+WORKDIR /app
+
+# Copy the top-level/parent POM
+COPY pom.xml .
+
+# Copy submodule POMs
+COPY rest/pom.xml rest/pom.xml
+COPY calculator/pom.xml calculator/pom.xml
+COPY shared-dto/pom.xml shared-dto/pom.xml
+
+# Copy submodule source code
+COPY rest/src rest/src
+COPY calculator/src calculator/src
+COPY shared-dto/src shared-dto/src
+
+# Build only 'calculator' but also the modules it depends on (shared-dto), skipping tests
+RUN mvn clean package -pl calculator -am -DskipTests
+
+# Stage 2: minimal runtime
+FROM eclipse-temurin:17-jre
+WORKDIR /app
+
+# Copy the jar from the builder stage
+COPY --from=builder /app/calculator/target/calculator-0.0.1-SNAPSHOT.jar /app/calculator.jar
+
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar", "calculator.jar"]

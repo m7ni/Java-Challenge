@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>shared-dto</name>
     <description>shared-dto</description>
+    <packaging>jar</packaging>
     <url/>
     <licenses>
         <license/>

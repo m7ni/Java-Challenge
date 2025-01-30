@@ -1,0 +1,29 @@
+# Stage 1: Build 'rest' plus its dependencies (shared-dto) using -pl rest -am
+FROM maven:3.8.6-eclipse-temurin-17 AS builder
+WORKDIR /app
+
+# Copy the top-level/parent POM
+COPY pom.xml .
+
+# Copy submodule POMs
+COPY rest/pom.xml rest/pom.xml
+COPY calculator/pom.xml calculator/pom.xml
+COPY shared-dto/pom.xml shared-dto/pom.xml
+
+# Copy submodule source code
+COPY rest/src rest/src
+COPY calculator/src calculator/src
+COPY shared-dto/src shared-dto/src
+
+# Build only 'rest' but also make modules it depends on (shared-dto) and skip tests
+RUN mvn clean package -pl rest -am -DskipTests
+
+# Stage 2: Create minimal runtime image with only the final JAR
+FROM eclipse-temurin:17-jre
+WORKDIR /app
+
+# Copy the jar from the builder stage
+COPY --from=builder /app/rest/target/rest-0.0.1-SNAPSHOT.jar /app/rest.jar
+
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "rest.jar"]
