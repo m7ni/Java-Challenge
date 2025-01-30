@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
@@ -59,7 +60,21 @@ public class KafkaConfig {
         configs.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class.getName());
         configs.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
 
+        configs.put(ConsumerConfig.INTERCEPTOR_CLASSES_CONFIG,
+                "com.challenge.wit.calculator.kafka.MdcKafkaConsumerInterceptor");
+
         return new DefaultKafkaConsumerFactory<>(configs);
+    }
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, CalculationRequest> kafkaListenerContainerFactory(
+            ConsumerFactory<String, CalculationRequest> consumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<String, CalculationRequest> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory);
+
+        factory.setBatchListener(false);
+
+        return factory;
     }
 }
 

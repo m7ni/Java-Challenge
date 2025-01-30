@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 public class KafkaProducer {
 
     private final KafkaTemplate<String, CalculationRequest> kafkaTemplate;
-    private final String requestsTopic;
 
+    private String requestsTopic;
 
     public KafkaProducer(KafkaTemplate<String, CalculationRequest> kafkaTemplate,
                          @Value("${calculator.requests.topic}") String requestsTopic) {
