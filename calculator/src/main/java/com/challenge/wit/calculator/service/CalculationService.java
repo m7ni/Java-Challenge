@@ -1,6 +1,5 @@
 package com.challenge.wit.calculator.service;
 
-import com.challenge.wit.calculator.kafka.MdcKafkaConsumerInterceptor;
 import com.challenge.wit.shared.dto.CalculationRequest;
 import com.challenge.wit.shared.dto.CalculationResponse;
 import com.challenge.wit.shared.logging.LoggingConstants;

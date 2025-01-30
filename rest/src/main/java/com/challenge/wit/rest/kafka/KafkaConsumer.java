@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 
 @Component
 public class KafkaConsumer {
-    private static final Logger logger = LoggerFactory.getLogger(OperationController.class);
+    private static final Logger logger = LoggerFactory.getLogger(KafkaConsumer.class);
     private final ConcurrentMap<String, CompletableFuture<CalculationResponse>> pendingRequests = new ConcurrentHashMap<>();
 
     @KafkaListener(topics = "${calculator.responses.topic}", groupId = "${spring.kafka.consumer.group-id}")

@@ -1,4 +1,4 @@
-package com.challenge.wit.shared.dto;
+package com.challenge.wit.shared;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

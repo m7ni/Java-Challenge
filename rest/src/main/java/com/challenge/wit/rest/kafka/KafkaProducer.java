@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class KafkaProducer {
-    private static final Logger logger = LoggerFactory.getLogger(OperationController.class);
+    private static final Logger logger = LoggerFactory.getLogger(KafkaProducer.class);
     private final KafkaTemplate<String, CalculationRequest> kafkaTemplate;
 
     private String requestsTopic;
