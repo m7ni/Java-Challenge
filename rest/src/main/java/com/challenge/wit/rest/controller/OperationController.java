@@ -33,9 +33,9 @@ public class OperationController {
             @PathVariable String operation,
             @RequestParam Double a,
             @RequestParam Double b) {
-        logger.info("Received HTTP request: Operation={}, a={}, b={}, requestId ={}", operation, a, b, MDC.get(RequestIdFilter.MDC_REQUEST_ID_KEY));
+        logger.info("Received HTTP request: Operation={}, a={}, b={}", operation, a, b);
         CalculationResult result = calculationService.calculate(operation, a, b);
-        logger.info("Sending HTTP response: {} , requestId ={}", result,MDC.get(RequestIdFilter.MDC_REQUEST_ID_KEY));
+        logger.info("Sending HTTP response: {} ", result);
         return ResponseEntity.ok(result);
     }
 

@@ -2,7 +2,7 @@
 <configuration>
 
     <!-- Define Pattern for Log Messages -->
-    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] [RequestId:%X{requestId}] %logger{36} - %msg%n"/>
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] [RequestId:%X{requestId}] %msg%n"/>
 
     <!-- Console Appender -->
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
@@ -26,10 +26,12 @@
     <!-- Root Logger -->
     <root level="INFO">
         <appender-ref ref="Console" />
+        <appender-ref ref="RestFileAppender" />
     </root>
 
     <!-- Logger for REST Module -->
-    <logger name="com.challenge.wit.rest" level="DEBUG" additivity="false">
+    <logger name="com.challenge.wit.rest" level="DEBUG">
+        <appender-ref ref="Console" />
         <appender-ref ref="RestFileAppender" />
     </logger>
 
