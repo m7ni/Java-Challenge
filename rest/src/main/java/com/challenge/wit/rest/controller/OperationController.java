@@ -4,6 +4,7 @@ import com.challenge.wit.rest.exception.InvalidOperationException;
 import com.challenge.wit.rest.filter.RequestIdFilter;
 import com.challenge.wit.rest.service.ICalculationService;
 import com.challenge.wit.shared.dto.CalculationResult;
+import com.challenge.wit.shared.logging.LoggingConstants;
 import jakarta.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,7 @@ public class OperationController {
             @PathVariable String operation,
             @RequestParam Double a,
             @RequestParam Double b) {
-        logger.info("Received HTTP request: Operation={}, a={}, b={}", operation, a, b);
+        logger.debug(LoggingConstants.LOG_HTTP_REQUEST, operation, a, b);
         CalculationResult result = calculationService.calculate(operation, a, b);
         logger.info("Sending HTTP response: {} ", result);
         return ResponseEntity.ok(result);

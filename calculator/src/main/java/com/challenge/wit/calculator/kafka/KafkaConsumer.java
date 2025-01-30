@@ -3,6 +3,7 @@ package com.challenge.wit.calculator.kafka;
 import com.challenge.wit.calculator.service.CalculationService;
 import com.challenge.wit.shared.dto.CalculationRequest;
 import com.challenge.wit.shared.dto.CalculationResponse;
+import com.challenge.wit.shared.logging.LoggingConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -24,7 +25,8 @@ public class KafkaConsumer {
 
     @KafkaListener(topics = "${calculator.requests.topic}", groupId = "${spring.kafka.consumer.group-id}")
     public void consume(CalculationRequest request) {
-        logger.info("Received Kafka request: Operation={}, a={}, b={}, requestId ={}", request.getOperation(), request.getOperandA(), request.getOperandB(), MDC.get(MdcKafkaConsumerInterceptor.MDC_REQUEST_ID_KEY));
+        logger.info(LoggingConstants.LOG_KAFKA_RECEIVE, "calculator-requests");
+        logger.info(LoggingConstants.LOG_CALCULATION_REQUEST, request.getOperation(),request.getOperandA(),request.getOperandB());
         try{
             CalculationResponse response = calculationService.calculate(request);
             kafkaProducer.sendRequest(response);

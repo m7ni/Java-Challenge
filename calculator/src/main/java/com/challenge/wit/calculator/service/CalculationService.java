@@ -3,6 +3,7 @@ package com.challenge.wit.calculator.service;
 import com.challenge.wit.calculator.kafka.MdcKafkaConsumerInterceptor;
 import com.challenge.wit.shared.dto.CalculationRequest;
 import com.challenge.wit.shared.dto.CalculationResponse;
+import com.challenge.wit.shared.logging.LoggingConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -17,8 +18,6 @@ public class CalculationService {
     private static final Logger logger = LoggerFactory.getLogger(CalculationService.class);
 
     public CalculationResponse calculate(CalculationRequest request) {
-        logger.info("Received calculation request: Operation={}, OperandA={}, OperandB={}",
-                request.getOperation(), request.getOperandA(), request.getOperandB());
 
         BigDecimal result;
         String error = null;
@@ -27,15 +26,15 @@ public class CalculationService {
             switch (request.getOperation().toLowerCase()) {
                 case "sum":
                     result = request.getOperandA().add(request.getOperandB());
-                    logger.debug("Sum result: {}", result);
+                    logger.debug(LoggingConstants.LOG_CALCULATION_RESULT,"Sum", result);
                     break;
                 case "subtract":
                     result = request.getOperandA().subtract(request.getOperandB());
-                    logger.debug("Subtract result: {}", result);
+                    logger.debug(LoggingConstants.LOG_CALCULATION_RESULT,"subtraction", result);
                     break;
                 case "multiply":
                     result = request.getOperandA().multiply(request.getOperandB());
-                    logger.debug("Multiply result: {}", result);
+                    logger.debug(LoggingConstants.LOG_CALCULATION_RESULT,"multiplication", result);
                     break;
                 case "divide":
                     if (request.getOperandB().compareTo(BigDecimal.ZERO) == 0) {
@@ -44,20 +43,19 @@ public class CalculationService {
                     }
                     // Specify scale and rounding mode to handle non-terminating decimals
                     result = request.getOperandA().divide(request.getOperandB(), 10, RoundingMode.HALF_UP);
-                    logger.debug("Division result: {}", result);
+                    logger.debug(LoggingConstants.LOG_CALCULATION_RESULT,"diviosn", result);
                     break;
                 default:
-                    logger.error("Unsupported operation: {}", request.getOperation());
+                    logger.error(LoggingConstants.LOG_UNSUPPORTED_OPERATION, request.getOperation());
                     throw new UnsupportedOperationException("Unsupported operation: " + request.getOperation());
             }
         } catch (Exception ex) {
-            logger.error("Error during calculation: {}", ex.getMessage(), ex);
+            logger.error(LoggingConstants.LOG_ERROR, ex.getClass().getSimpleName(), ex.getMessage());
             result = null;
             error = ex.getMessage();
         }
 
-        logger.info("Calculation response: RequestId={}, Result={}, Error={}",
-                MDC.get(MdcKafkaConsumerInterceptor.MDC_REQUEST_ID_KEY), result, error);
+        logger.info(LoggingConstants.LOG_CALCULATION_RESPONSE, result, error);
         return new CalculationResponse(request.getRequestId(), result, error);
     }
 }
