@@ -71,4 +71,28 @@ public class GlobalExceptionHandler{
         );
         return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
     }
+
+    @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatch(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException ex) {
+        // Build a 400 response for invalid or missing inputs
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                "Invalid parameter: " + ex.getName(),
+                Collections.singletonList("Expected type: " + (ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "Unknown")),
+                "VALIDATION_ERROR"
+        );
+        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
+    }
+
+    @ExceptionHandler(org.springframework.web.bind.MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse> handleMissingParams(org.springframework.web.bind.MissingServletRequestParameterException ex) {
+        // Build a 400 response for missing parameters
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                "Missing required parameter: " + ex.getParameterName(),
+                Collections.singletonList("Parameter is required but not provided."),
+                "VALIDATION_ERROR"
+        );
+        return new ResponseEntity<>(errorResponse, errorResponse.getStatus());
+    }
 }
