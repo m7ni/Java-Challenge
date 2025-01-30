@@ -1,4 +1,4 @@
-# WIT Challenge
+# JAVA CHALLENGE
 
 This repository demonstrates a microservices setup using Apache Kafka as the communication layer, where:
 
