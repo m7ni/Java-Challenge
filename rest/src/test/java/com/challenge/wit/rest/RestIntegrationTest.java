@@ -7,8 +7,10 @@ import com.challenge.wit.rest.service.CalculationService;
 import com.challenge.wit.shared.dto.CalculationRequest;
 import com.challenge.wit.shared.dto.CalculationResponse;
 import com.challenge.wit.shared.dto.CalculationResult;
+import com.challenge.wit.shared.logging.LoggingConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
@@ -30,6 +32,10 @@ class RestIntegrationTest {
         kafkaProducer = mock(KafkaProducer.class);
         kafkaConsumer = mock(KafkaConsumer.class);
         calculationService = new CalculationService(kafkaProducer, kafkaConsumer);
+        MDC.put(LoggingConstants.MDC_REQUEST_ID_KEY, "testRequestId");
+        CalculationResponse defaultResp = new CalculationResponse(MDC.get(LoggingConstants.MDC_REQUEST_ID_KEY), BigDecimal.ZERO, null);
+        when(kafkaConsumer.createPendingRequest(anyString()))
+                .thenReturn(CompletableFuture.completedFuture(defaultResp));
     }
 
     @Test
