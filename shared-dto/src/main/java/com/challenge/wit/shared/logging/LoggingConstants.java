@@ -16,4 +16,5 @@ public class LoggingConstants {
     public static final String LOG_ERROR = "Error processing request - Type: {}, Message: {}";
     public static final String LOG_VALIDATION_ERROR = "Validation Error - {}";
     public static final String LOG_CALCULATION_RESULT = "Calculation Result - {}, Result: {}";
+    public static final String LOG_UNSUPPORTED_OPERATION = "Unsupported operation: {}";
 }

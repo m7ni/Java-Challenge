@@ -1,0 +1,70 @@
+version: '3.8'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.1
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - '2181:2181'
+
+  kafka:
+    image: confluentinc/cp-kafka:7.3.1
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      # We map 9092 for internal,
+      # plus also we might externally access 19092 (if you want that exposed)
+      - '9092:9092'
+      # If you want to expose 19092 to host, do '19092:19092'
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+      # Two listeners with unique names
+      KAFKA_LISTENERS: |
+        PLAINTEXT_INTERNAL://0.0.0.0:9092,
+        PLAINTEXT_EXTERNAL://0.0.0.0:19092
+
+      # Advertise them for internal container communication & external host access
+      KAFKA_ADVERTISED_LISTENERS: |
+        PLAINTEXT_INTERNAL://kafka:9092,
+        PLAINTEXT_EXTERNAL://localhost:19092
+
+      # Map each named listener to PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: |
+        PLAINTEXT_INTERNAL:PLAINTEXT,
+        PLAINTEXT_EXTERNAL:PLAINTEXT
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+
+  rest:
+    build:
+      context: .
+      dockerfile: Dockerfile-rest
+    container_name: rest
+    depends_on:
+      - kafka
+    ports:
+      - '8080:8080'
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP-SERVERS=kafka:9092
+    restart: on-failure
+
+  calculator:
+    build:
+      context: .
+      dockerfile: Dockerfile-calculator
+    container_name: calculator
+    depends_on:
+      - kafka
+    ports:
+      - '8081:8081'
+    environment:
+      - SPRING_KAFKA_BOOTSTRAP-SERVERS=kafka:9092
+    restart: on-failure

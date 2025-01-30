@@ -8,6 +8,7 @@
         <version>3.4.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    <packaging>pom</packaging>
     <groupId>com.challenge.wit</groupId>
     <artifactId>wit-challenge</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -26,6 +27,11 @@
         <tag/>
         <url/>
     </scm>
+    <modules>
+        <module>shared-dto</module>
+        <module>rest</module>
+        <module>calculator</module>
+    </modules>
     <properties>
         <java.version>17</java.version>
     </properties>
