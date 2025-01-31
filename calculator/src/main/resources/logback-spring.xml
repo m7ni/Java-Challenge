@@ -31,6 +31,13 @@
         <appender-ref ref="FileAppender" />
     </root>
 
+    <!-- Logger for Calculator Module -->
+    <logger name="com.challenge.wit.calculator" level="DEBUG">
+        <appender-ref ref="Console" />
+        <appender-ref ref="FileAppender" />
+    </logger>
+
+
     <!-- Reduce verbosity for Spring Framework -->
     <logger name="org.springframework" level="INFO" />
 </configuration>
